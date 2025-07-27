@@ -37,7 +37,7 @@
         .container { max-width: 1200px; margin: auto; padding: 0 1rem; }
         .section-title { font-size: clamp(2rem, 10vw, 3rem); font-weight: 900; text-align: center; margin-bottom: 2rem; text-transform: uppercase; }
 
-        /* --- PRELOADER (From previous fix) --- */
+        /* --- PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         .spinner { border: 4px solid var(--grey-color); border-top: 4px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -50,16 +50,11 @@
         .logo-accent { color: var(--primary-color); }
         .nav-links { display: none; } /* Hidden on mobile */
         .header-actions { display: flex; align-items: center; gap: 1rem; z-index: 1002;}
-        .hamburger {
-            display: block;
-            z-index: 1100;
-            background: none;
-            border: none;
-            position: absolute;
-            top: 1.2rem;
-            right: 1.5rem;
-        }
-        .hamburger .bar { display: block; width: 25px; height: 3px; margin: 5px auto; transition: all 0.3s ease-in-out; background-color: var(--text-color); }
+        .hamburger { display: block; z-index: 1100; background: none; border: none; position: relative; width: 25px; height: 21px; }
+        .hamburger .bar { display: block; width: 25px; height: 3px; margin: 5px auto; transition: all 0.3s ease-in-out; background-color: var(--text-color); position: absolute; left: 0; }
+        .hamburger .bar:nth-child(1) { top: 0; }
+        .hamburger .bar:nth-child(2) { top: 8px; }
+        .hamburger .bar:nth-child(3) { top: 16px; }
         .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(2) { opacity: 0; }
         .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -84,7 +79,7 @@
         .filter-btn.active { background: var(--primary-color); color: #fff; }
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
         .product-card { background: var(--card-bg-color); border-radius: 10px; overflow: hidden; }
-        .product-card img { width: 100%; aspect-ratio: 1 / 1.1; object-fit: cover; }
+        .product-card img { width: 100%; aspect-ratio: 1 / 1.25; object-fit: cover; }
         .product-info { padding: 1rem; }
         .product-info h3 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
@@ -99,103 +94,37 @@
         .modal-body .description { margin-bottom: 1.5rem; }
 
         /* --- AURA FLAGSHIP MARQUEE --- */
-        .aura-marquee-section {
-            padding: 4rem 0;
-            width: 100vw;
-            overflow: hidden;
-            background: transparent;
-        }
-        .aura-marquee {
-            white-space: nowrap;
-        }
-        .aura-marquee span {
-            display: inline-block;
-            font-size: clamp(4rem, 12vw, 8rem);
-            color: var(--primary-color);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 900;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            animation: auraMarqueeAnim 40s linear infinite;
-        }
-        @keyframes auraMarqueeAnim {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        .aura-marquee-section { padding: 4rem 0; width: 100vw; overflow: hidden; background: transparent; }
+        .aura-marquee { white-space: nowrap; }
+        .aura-marquee span { display: inline-block; font-size: clamp(4rem, 12vw, 8rem); color: var(--primary-color); font-family: 'Poppins', sans-serif; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; animation: auraMarqueeAnim 40s linear infinite; }
+        @keyframes auraMarqueeAnim { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* --- FOOTER --- */
-        .main-footer {
-            background-color: var(--footer-bg-color);
-            padding: 4rem 0 2rem;
-            border-top: 1px solid var(--footer-border-color);
-            transition: background-color 0.4s ease;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2.5rem;
-            margin-bottom: 3rem;
-        }
-        .footer-column h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-        .footer-column ul {
-            list-style: none;
-        }
-        .footer-column ul li a {
-            padding: 0.4rem 0;
-            display: block;
-            transition: color 0.3s ease;
-        }
-        .footer-column ul li a:hover {
-            color: var(--primary-color);
-        }
-        .footer-column p {
-            max-width: 300px;
-            opacity: 0.8;
-        }
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .social-links a {
-            display: inline-block;
-        }
-        .social-links a svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--text-color);
-            transition: fill 0.3s ease, transform 0.3s ease;
-        }
-        .social-links a:hover svg {
-            fill: var(--primary-color);
-            transform: scale(1.1);
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--footer-border-color);
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
+        .main-footer { background-color: var(--footer-bg-color); padding: 4rem 0 2rem; border-top: 1px solid var(--footer-border-color); transition: background-color 0.4s ease; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 3rem; }
+        .footer-column h4 { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; color: var(--primary-color); }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li a { padding: 0.4rem 0; display: block; transition: color 0.3s ease; }
+        .footer-column ul li a:hover { color: var(--primary-color); }
+        .footer-column p { max-width: 300px; opacity: 0.8; }
+        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-links a { display: inline-block; }
+        .social-links a svg { width: 24px; height: 24px; fill: var(--text-color); transition: fill 0.3s ease, transform 0.3s ease; }
+        .social-links a:hover svg { fill: var(--primary-color); transform: scale(1.1); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid var(--footer-border-color); font-size: 0.9rem; opacity: 0.7; }
 
         /* --- DESKTOP STYLES & MEGA MENU --- */
         @media (min-width: 768px) {
-            .footer-grid {
-                /* Creates responsive columns that wrap automatically */
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            }
+            .footer-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
         }
         @media (min-width: 992px) {
             .container { padding: 0 2rem; }
-            .hamburger, .mobile-nav-overlay { display: none; }
-            .nav-links { display: flex; list-style: none; align-items: center; }
+            .hamburger { display: none; }
+            .mobile-nav-overlay { display: none; }
+            .main-nav { justify-content: space-between; position: relative; }
+            .logo { order: 1; }
+            .nav-links { order: 2; display: flex; list-style: none; align-items: center; gap: 0.5rem; }
+            .header-actions { order: 3; }
             .nav-links > li { position: relative; padding: 1rem; }
             .nav-links > li > a { font-weight: 600; display: flex; align-items: center; gap: 0.3rem; }
             .nav-links > li > a svg { width: 12px; height: 12px; fill: currentColor; transition: transform 0.3s ease; }
@@ -217,7 +146,8 @@
             <li><a href="#featured" class="nav-filter-link" data-filter="all">All Products</a></li>
             <li><a href="#featured" class="nav-filter-link" data-filter="apparel">Apparel</a></li>
             <li><a href="#featured" class="nav-filter-link" data-filter="shoes">Footwear</a></li>
-            <li><a href="#lookbook">Lookbook</a></li>
+            <li><a href="#featured" class="nav-filter-link" data-filter="accessories">Accessories</a></li>
+            <li><a href="#">Lookbook</a></li>
         </ul>
     </div>
 
@@ -262,23 +192,37 @@
                         </div>
                     </div>
                 </li>
-                <li><a href="#lookbook">Lookbook</a></li>
+                <li>
+                    <a href="#featured">Accessories <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></a>
+                     <div class="dropdown-menu">
+                        <div class="dropdown-column">
+                            <h4>Categories</h4>
+                            <ul>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="accessories">All Accessories</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="hats">Hats</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="bags">Bags</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="socks">Socks</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#">Lookbook</a></li>
             </ul>
+
+            <div class="header-actions">
+                <!-- Cart icon could go here -->
+            </div>
 
             <button class="hamburger">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </button>
-            
-            <div class="header-actions">
-                <!-- (Cart and Theme Toggles would go here) -->
-            </div>
         </nav>
     </header>
     
     <main>
         <section class="hero" id="hero">
-            <video id="hero-video" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=2070&auto=format&fit=crop">
-                <source src="3917742-uhd_4096_2160_25fps.mp4" type="video/mp4">
+            <video id="hero-video" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523381294911-8d3cead13475">
+                <source src="https://videos.pexels.com/video-files/7578544/7578544-hd_1920_1080_25fps.mp4" type="video/mp4">
             </video>
             <div class="hero-overlay"></div>
             <div class="hero-content">
@@ -295,6 +239,7 @@
                     <button class="filter-btn active" data-filter="all">All</button>
                     <button class="filter-btn" data-filter="apparel">Apparel</button>
                     <button class="filter-btn" data-filter="shoes">Footwear</button>
+                    <button class="filter-btn" data-filter="accessories">Accessories</button>
                 </div>
                 <div class="products-grid">
                     <!-- Products will be dynamically inserted here by JavaScript -->
@@ -303,15 +248,12 @@
         </section>
     </main>
     
-    <!-- === NEW: AURA FLAGSHIP MARQUEE SECTION === -->
     <section class="aura-marquee-section">
         <div class="aura-marquee">
-            <!-- Content is duplicated to ensure a seamless animation loop -->
             <span>AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp;</span>
         </div>
     </section>
     
-    <!-- === NEW: FOOTER SECTION === -->
     <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
@@ -324,46 +266,18 @@
                         <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.81C10.44 7.31 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg></a>
                     </div>
                 </div>
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Press</a></li>
-                        <li><a href="#">Sustainability</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Shipping & Returns</a></li>
-                        <li><a href="#">Order Status</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
+                <div class="footer-column"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Sustainability</a></li></ul></div>
+                <div class="footer-column"><h4>Support</h4><ul><li><a href="#">Contact Us</a></li><li><a href="#">FAQ</a></li><li><a href="#">Shipping & Returns</a></li><li><a href="#">Order Status</a></li></ul></div>
+                <div class="footer-column"><h4>Legal</h4><ul><li><a href="#">Terms & Conditions</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
             </div>
-            <div class="footer-bottom">
-                &copy; <span id="copyright-year">2024</span> AURA Collective. All Rights Reserved.
-            </div>
+            <div class="footer-bottom">&copy; <span id="copyright-year">2024</span> AURA Collective. All Rights Reserved.</div>
         </div>
     </footer>
 
-
-    <!-- Product Modal -->
     <div class="modal" id="product-modal">
         <div class="modal-content">
             <button class="modal-close" id="modal-close-btn">&times;</button>
-            <div class="modal-body" id="modal-body-content">
-                <!-- Modal content will be dynamically inserted here -->
-            </div>
+            <div class="modal-body" id="modal-body-content"></div>
         </div>
     </div>
     
@@ -371,22 +285,45 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         const productsData = [
-            // --- FOOTWEAR ---
+            // --- FOOTWEAR (1-12) ---
             {id:1,name:"AURA Velocity Pro",price:180,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff",cat:["shoes", "running", "men"],desc:"Carbon-plated for maximum energy return, the Velocity Pro is our pinnacle racing shoe, designed for those who chase records."},
-            {id:2,name:"AURA Stratus",price:165,img:"https://images.unsplash.com/photo-1595950653106-6090ee0366aa",cat:["shoes", "lifestyle", "women"],desc:"All-day comfort meets sleek, modern design. The Stratus features our plush AURA-foam midsole for a cloud-like feel."},
-            {id:3,name:"AURA Classic Highs",price:120,img:"https://images.unsplash.com/photo-1560769629-975ec94e6a86",cat:["shoes", "lifestyle", "men", "women"],desc:"An icon reimagined. Premium leather and a timeless silhouette make the Classic Highs a staple in any wardrobe."},
-            {id:4,name:"AURA TrailBlazer",price:140,img:"https://images.unsplash.com/photo-1528660499422-3d2395b055d3",cat:["shoes", "running", "trail", "men"],desc:"Built for the wild. A rugged, high-traction outsole and water-resistant upper keep you stable and dry on any terrain."},
-            {id:5,name:"AURA Court Slam",price:155,img:"https://images.unsplash.com/photo-1579338559194-a162d19bf842",cat:["shoes", "lifestyle", "tennis", "women"],desc:"Dominate the court and the street. The Court Slam offers lateral stability and a retro-inspired look."},
-            // --- APPAREL: MEN ---
-            {id:101,name:"AURA Tech Hoodie",price:95,img:"https://images.unsplash.com/photo-1556426425-54b6a4a2a161",cat:["apparel", "men", "hoodies"],desc:"Our best-selling hoodie. Made from a premium, moisture-wicking fleece that's perfect for warm-ups or weekend lounging."},
-            {id:102,name:"AURA Motion Pants",price:80,img:"https://images.unsplash.com/photo-1511252391242-0a2a51a2481e",cat:["apparel", "men", "pants"],desc:"Four-way stretch fabric moves with you. These versatile pants are tailored for a clean look, suitable for the gym or the city."},
-            {id:103,name:"AURA Performance Tee",price:50,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",cat:["apparel", "men", "shirts"],desc:"Lightweight, breathable, and anti-odor technology. The only tee you'll need for your toughest workouts."},
-            {id:104,name:"AURA Urban Jacket",price:150,img:"https://images.unsplash.com/photo-1520975954732-35dd222996b7",cat:["apparel", "men", "jackets"],desc:"A water-resistant shell with a minimalist design. The Urban Jacket protects you from the elements without sacrificing style."},
-             // --- APPAREL: WOMEN ---
-            {id:201,name:"AURA Flow Dress",price:110,img:"https://images.unsplash.com/photo-1503142721832-720488404a43",cat:["apparel", "women", "dresses"],desc:"Effortlessly elegant. The Flow Dress is made from a soft, breathable fabric that drapes beautifully for any occasion."},
-            {id:202,name:"AURA Align Leggings",price:85,img:"https://images.unsplash.com/photo-1541336032482-84a5a51c6f97",cat:["apparel", "women", "leggings", "pants"],desc:"Buttery-soft and supportive. The Align Leggings feel like a second skin, perfect for yoga, pilates, or everyday wear."},
-            {id:203,name:"AURA Cloud-Knit Top",price:65,img:"https://images.unsplash.com/photo-1581044777550-4cfa6ce67943",cat:["apparel", "women", "tops"],desc:"The perfect layering piece. Our Cloud-Knit fabric is unbelievably soft, with a relaxed fit for ultimate comfort."},
-            {id:204,name:"AURA Stride Shorts",price:55,img:"https://images.unsplash.com/photo-1594758257743-91122a61b8f4",cat:["apparel", "women", "shorts"],desc:"A built-in liner and a lightweight shell provide coverage and freedom of movement for your daily run."},
+            {id:2,name:"AURA Stratus",price:165,img:"https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb",cat:["shoes", "lifestyle", "women"],desc:"All-day comfort meets sleek, modern design. The Stratus features our plush AURA-foam midsole for a cloud-like feel."},
+            {id:3,name:"AURA Classic Highs",price:120,img:"https://images.unsplash.com/photo-1608231387042-66d1773070a5",cat:["shoes", "lifestyle", "men", "women"],desc:"An icon reimagined. Premium leather and a timeless silhouette make the Classic Highs a staple in any wardrobe."},
+            
+            {id:5,name:"AURA Court Slam",price:155,img:"https://images.unsplash.com/photo-1511556532299-8f662fc26c06",cat:["shoes", "lifestyle", "tennis", "women"],desc:"Dominate the court and the street. The Court Slam offers lateral stability and a retro-inspired look."},
+            
+            
+            
+            
+           // {id:10,name:"AURA Metro Low-Top",price:95,img:"https://images.unsplash.com/photo-1549298916-b41d501d3772",cat:["shoes", "lifestyle", "men"],desc:"Clean lines and a minimalist aesthetic define the Metro Low-Top, perfect for any casual occasion."},
+            //{id:11,name:"AURA Ballet Flat",price:85,img:"https://images.unsplash.com/photo-1603413595438-e6d875a6c3f3",cat:["shoes", "lifestyle", "women"],desc:"Effortless elegance and packable convenience. Our leather ballet flats are a versatile essential."},
+
+            // --- APPAREL: MEN (101-114) ---
+            //{id:101,name:"AURA Tech Hoodie",price:95,img:"https://images.unsplash.com/photo-1621303837116-83b6389657c7",cat:["apparel", "men", "hoodies"],desc:"Our best-selling hoodie. Made from a premium, moisture-wicking fleece that's perfect for warm-ups or weekend lounging."},
+            //{id:102,name:"AURA Motion Pants",price:80,img:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",cat:["apparel", "men", "pants"],desc:"Four-way stretch fabric moves with you. These versatile pants are tailored for a clean look, suitable for the gym or the city."},
+            //{id:103,name:"AURA Performance Tee",price:50,img:"https://images.unsplash.com/photo-1503341504253-dff481648530",cat:["apparel", "men", "shirts"],desc:"Lightweight, breathable, and anti-odor technology. The only tee you'll need for your toughest workouts."},
+            {id:104,name:"AURA Urban Jacket",price:150,img:"https://images.unsplash.com/photo-1551028719-00167b16eac5",cat:["apparel", "men", "jackets"],desc:"A water-resistant shell with a minimalist design. The Urban Jacket protects you from the elements without sacrificing style."},
+            //{id:105,name:"AURA Everyday Chinos",price:75,img:"https://images.unsplash.com/photo-1593348121682-844a485a4948",cat:["apparel", "men", "pants"],desc:"Classic chino pants with a modern tapered fit and a hint of stretch for all-day comfort."},
+            //{id:106,name:"AURA Henley Shirt",price:55,img:"https://images.unsplash.com/photo-1529334882465-81403b05594b",cat:["apparel", "men", "shirts"],desc:"A three-button long-sleeve Henley crafted from soft, textured waffle-knit cotton."},
+            //{id:107,name:"AURA Apex Shorts",price:60,img:"https://images.unsplash.com/photo-1615565985064-a476c3f9191e",cat:["apparel", "men", "shorts"],desc:"Versatile training shorts with a liner, zippered pocket, and lightweight fabric for any workout."},
+            //{id:108,name:"AURA Denim Jacket",price:130,img:"https://images.unsplash.com/photo-1604176354204-945931398a03",cat:["apparel", "men", "jackets"],desc:"A timeless denim jacket with a modern fit. Built to last and gets better with every wear."},
+            {id:109,name:"AURA Graphic Tee",price:40,img:"https://images.unsplash.com/photo-1576566588028-4147f3842f27",cat:["apparel", "men", "shirts"],desc:"Soft cotton tee featuring a minimalist AURA logo graphic. A subtle statement piece."},
+            //{id:110,name:"AURA Crewneck Sweatshirt",price:85,img:"https://images.unsplash.com/photo-1610384104075-e8395b3b0597",cat:["apparel", "men", "hoodies"],desc:"An essential crewneck sweatshirt made from ultra-soft fleece. Perfect for layering or lounging."},
+            //{id:111,name:"AURA Commuter Pants",price:110,img:"https://images.unsplash.com/photo-1548883354-94bcfe321c27",cat:["apparel", "men", "pants"],desc:"Technical trousers with a refined look. Water-resistant, breathable, and designed for life on the move."},
+            //{id:112,name:"AURA Puffer Vest",price:125,img:"https://images.unsplash.com/photo-1669482264831-61a7880e6a3d",cat:["apparel", "men", "jackets"],desc:"A lightweight, insulated vest that provides core warmth without the bulk. Ideal for transitional weather."},
+            //{id:113,name:"AURA Oxford Shirt",price:80,img:"https://images.unsplash.com/photo-1596934842345-48737e57973d",cat:["apparel", "men", "shirts"],desc:"A classic button-down Oxford shirt that effortlessly bridges the gap between casual and smart."},
+            //{id:114,name:"AURA Tops",price:90,img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b",cat:["apparel", "men", "pants"],desc:"Tapered joggers in a soft, durable fabric. Perfect for the gym, travel, or relaxing at home."},
+
+             // --- APPAREL: WOMEN (201-214) ---
+            {id:201,name:"AURA Tops",price:90,img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b",cat:["apparel", "men", "pants"],desc:"Tapered joggers in a soft, durable fabric. Perfect for the gym, travel, or relaxing at home."},
+            //{id:202,name:"AURA Align Leggings",price:85,img:"https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2",cat:["apparel", "women", "leggings", "pants"],desc:"Buttery-soft and supportive. The Align Leggings feel like a second skin, perfect for yoga, pilates, or everyday wear."},
+            //{id:203,name:"AURA Cloud-Knit Top",price:65,img:"https://images.unsplash.com/photo-1554631221-f9603e680854",cat:["apparel", "women", "tops"],desc:"The perfect layering piece. Our Cloud-Knit fabric is unbelievably soft, with a relaxed fit for ultimate comfort."},
+            //{id:204,name:"AURA Stride Shorts",price:55,img:"https://images.unsplash.com/photo-1591925384193-8a828859496f",cat:["apparel", "women", "shorts"],desc:"A built-in liner and a lightweight shell provide coverage and freedom of movement for your daily run."},
+           
+
+            // --- ACCESSORIES (301-309) ---
+            {id:301,name:"AURA Classic Beanie",price:35,img:"https://images.unsplash.com/photo-1556306535-0f09a537f0a3",cat:["accessories", "hats", "men", "women"],desc:"A soft, ribbed-knit beanie for warmth and style. Available in multiple colors."},
+            
         ];
 
         const productsGrid = document.querySelector('.products-grid');
@@ -400,8 +337,10 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.dataset.id = product.id;
+                // CORRECTED and IMPROVED image URL construction
+                const imageUrl = `${product.img}?w=800&auto=format&fit=crop`;
                 card.innerHTML = `
-                    <img loading="lazy" src="${product.img}" alt="${product.name}">
+                    <img loading="lazy" src="${imageUrl}" alt="${product.name}">
                     <div class="product-info">
                         <h3>${product.name}</h3>
                         <p>$${product.price}</p>
@@ -414,9 +353,10 @@
         function showProductModal(productId) {
             const product = productsData.find(p => p.id == productId);
             if (!product) return;
-
+            // CORRECTED and IMPROVED image URL construction
+            const modalImageUrl = `${product.img}?w=1200&auto=format&fit=crop`;
             modalBody.innerHTML = `
-                <img src="${product.img}" alt="${product.name}">
+                <img src="${modalImageUrl}" alt="${product.name}">
                 <h2>${product.name}</h2>
                 <p class="price">$${product.price}</p>
                 <p class="description">${product.desc}</p>
@@ -451,18 +391,22 @@
             control.addEventListener('click', (e) => {
                 e.preventDefault();
                 const filter = control.dataset.filter;
+                if (!filter) return; // Ignore clicks on links without data-filter
 
                 document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
                 const mainButtons = document.querySelector('.filter-controls');
                 
-                const apparelKeywords = ['apparel', 'shirts', 'pants', 'hoodies', 'dresses', 'tops', 'leggings'];
-                const shoesKeywords = ['shoes', 'running', 'lifestyle'];
+                const apparelKeywords = ['apparel', 'shirts', 'pants', 'hoodies', 'dresses', 'tops', 'leggings', 'shorts', 'jackets'];
+                const shoesKeywords = ['shoes', 'running', 'lifestyle', 'trail', 'tennis'];
+                const accessoriesKeywords = ['accessories', 'hats', 'bags', 'socks'];
 
                 if (apparelKeywords.some(keyword => filter.includes(keyword))) {
                     mainButtons.querySelector('[data-filter="apparel"]').classList.add('active');
                 } else if (shoesKeywords.some(keyword => filter.includes(keyword))) {
                      mainButtons.querySelector('[data-filter="shoes"]').classList.add('active');
-                } else { // "all"
+                } else if (accessoriesKeywords.some(keyword => filter.includes(keyword))) {
+                     mainButtons.querySelector('[data-filter="accessories"]').classList.add('active');
+                } else {
                     mainButtons.querySelector('[data-filter="all"]').classList.add('active');
                 }
 
@@ -480,19 +424,14 @@
         });
 
         const hamburger = document.querySelector('.hamburger');
-        hamburger.addEventListener('click', () => {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
             mobileNavOverlay.classList.toggle('active');
         });
 
-        // --- INITIALIZATION ---
-        
-        // Dynamically set copyright year
         document.getElementById('copyright-year').textContent = new Date().getFullYear();
-        
-        // Initial render of all products
         renderProducts(productsData);
         
-        // Hide preloader once content is ready
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
             document.body.classList.remove('loading');
