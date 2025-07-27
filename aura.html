@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | The Flagship Store Experience</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL & SETUP (MOBILE-FIRST) --- */
+        :root {
+            --primary-color: #FA5B32;
+            --dark-color: #0A0A0A;
+            --light-color: #f4f4f4;
+            --grey-color: #222222;
+            --bg-color: var(--dark-color);
+            --text-color: var(--light-color);
+            --card-bg-color: var(--dark-color);
+            --footer-bg-color: #111111;
+            --footer-border-color: #333;
+        }
+        body.light-theme {
+            --bg-color: #F0F0F0;
+            --text-color: #1a1a1a;
+            --card-bg-color: #FFFFFF;
+            --grey-color: #e0e0e0;
+            --footer-bg-color: #FFFFFF;
+            --footer-border-color: #e0e0e0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; cursor: default; transition: background-color 0.4s ease, color 0.4s ease; }
+        a, button { cursor: pointer; text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: auto; padding: 0 1rem; }
+        .section-title { font-size: clamp(2rem, 10vw, 3rem); font-weight: 900; text-align: center; margin-bottom: 2rem; text-transform: uppercase; }
+
+        /* --- PRELOADER (From previous fix) --- */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        .spinner { border: 4px solid var(--grey-color); border-top: 4px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body.loading main, body.loading header, body.loading footer { visibility: hidden; }
+
+        /* --- HEADER & MOBILE NAV --- */
+        .main-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 1rem 0; background: rgba(10,10,10,0.5); backdrop-filter: blur(10px); }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; z-index: 1002;}
+        .logo-accent { color: var(--primary-color); }
+        .nav-links { display: none; } /* Hidden on mobile */
+        .header-actions { display: flex; align-items: center; gap: 1rem; z-index: 1002;}
+        .hamburger {
+            display: block;
+            z-index: 1100;
+            background: none;
+            border: none;
+            position: absolute;
+            top: 1.2rem;
+            right: 1.5rem;
+        }
+        .hamburger .bar { display: block; width: 25px; height: 3px; margin: 5px auto; transition: all 0.3s ease-in-out; background-color: var(--text-color); }
+        .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(2) { opacity: 0; }
+        .mobile-nav-overlay.active + .main-header .hamburger .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .mobile-nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 1001; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: translateY(-100%); transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1); }
+        .mobile-nav-overlay.active { transform: translateY(0); }
+        .mobile-nav-links { list-style: none; text-align: center; }
+        .mobile-nav-links li { margin: 1.5rem 0; }
+        .mobile-nav-links a { font-size: 1.5rem; font-weight: bold; }
+
+        /* --- HERO SECTION --- */
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; overflow: hidden; }
+        #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translateX(-50%) translateY(-50%); object-fit: cover;}
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2; }
+        .hero-content { position: relative; z-index: 3; padding: 0 1rem; }
+        .hero h1 { font-size: clamp(3rem, 15vw, 6rem); }
+        .btn { display: inline-block; background: var(--primary-color); color: #fff; padding: 14px 35px; border-radius: 50px; font-weight: 600; border: none; }
+        
+        /* --- PRODUCTS & FILTERING --- */
+        .featured { padding: 4rem 0; }
+        .filter-controls { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-btn { background: var(--grey-color); border: 1px solid transparent; color: var(--text-color); padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.9rem; }
+        .filter-btn.active { background: var(--primary-color); color: #fff; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .product-card { background: var(--card-bg-color); border-radius: 10px; overflow: hidden; }
+        .product-card img { width: 100%; aspect-ratio: 1 / 1.1; object-fit: cover; }
+        .product-info { padding: 1rem; }
+        .product-info h3 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        
+        /* --- PRODUCT MODAL --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--card-bg-color); border-radius: 15px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; padding: 1.5rem; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; background: none; border: none; }
+        .modal-body img { width: 100%; border-radius: 10px; margin-bottom: 1rem; }
+        .modal-body h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .modal-body .price { font-size: 1.2rem; color: var(--primary-color); font-weight: bold; margin-bottom: 1rem; }
+        .modal-body .description { margin-bottom: 1.5rem; }
+
+        /* --- AURA FLAGSHIP MARQUEE --- */
+        .aura-marquee-section {
+            padding: 4rem 0;
+            width: 100vw;
+            overflow: hidden;
+            background: transparent;
+        }
+        .aura-marquee {
+            white-space: nowrap;
+        }
+        .aura-marquee span {
+            display: inline-block;
+            font-size: clamp(4rem, 12vw, 8rem);
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: auraMarqueeAnim 40s linear infinite;
+        }
+        @keyframes auraMarqueeAnim {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- FOOTER --- */
+        .main-footer {
+            background-color: var(--footer-bg-color);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid var(--footer-border-color);
+            transition: background-color 0.4s ease;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        .footer-column ul {
+            list-style: none;
+        }
+        .footer-column ul li a {
+            padding: 0.4rem 0;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .footer-column ul li a:hover {
+            color: var(--primary-color);
+        }
+        .footer-column p {
+            max-width: 300px;
+            opacity: 0.8;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-links a {
+            display: inline-block;
+        }
+        .social-links a svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+            transition: fill 0.3s ease, transform 0.3s ease;
+        }
+        .social-links a:hover svg {
+            fill: var(--primary-color);
+            transform: scale(1.1);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--footer-border-color);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* --- DESKTOP STYLES & MEGA MENU --- */
+        @media (min-width: 768px) {
+            .footer-grid {
+                /* Creates responsive columns that wrap automatically */
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+        @media (min-width: 992px) {
+            .container { padding: 0 2rem; }
+            .hamburger, .mobile-nav-overlay { display: none; }
+            .nav-links { display: flex; list-style: none; align-items: center; }
+            .nav-links > li { position: relative; padding: 1rem; }
+            .nav-links > li > a { font-weight: 600; display: flex; align-items: center; gap: 0.3rem; }
+            .nav-links > li > a svg { width: 12px; height: 12px; fill: currentColor; transition: transform 0.3s ease; }
+            .nav-links > li:hover > a svg { transform: rotate(180deg); }
+            .dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--card-bg-color); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 1.5rem; display: flex; gap: 2rem; min-width: 400px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+            .nav-links > li:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .dropdown-column h4 { font-size: 1rem; margin-bottom: 1rem; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1px; }
+            .dropdown-column ul { list-style: none; }
+            .dropdown-column ul li a { display: block; padding: 0.5rem 0; }
+            .products-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="loading">
+    <div id="preloader"><div class="spinner"></div></div>
+    
+    <div class="mobile-nav-overlay">
+        <ul class="mobile-nav-links">
+            <li><a href="#featured" class="nav-filter-link" data-filter="all">All Products</a></li>
+            <li><a href="#featured" class="nav-filter-link" data-filter="apparel">Apparel</a></li>
+            <li><a href="#featured" class="nav-filter-link" data-filter="shoes">Footwear</a></li>
+            <li><a href="#lookbook">Lookbook</a></li>
+        </ul>
+    </div>
+
+    <header class="main-header">
+        <nav class="main-nav container">
+            <a href="#hero" class="logo">AURA<span class="logo-accent">.</span></a>
+            
+            <ul class="nav-links">
+                <li>
+                    <a href="#featured">Apparel <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-column">
+                            <h4>Men</h4>
+                            <ul>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="men apparel">All Men's</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="shirts">Shirts & Tees</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="pants">Pants</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="hoodies">Hoodies</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown-column">
+                            <h4>Women</h4>
+                            <ul>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="women apparel">All Women's</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="dresses">Dresses</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="tops">Tops</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="leggings">Leggings</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#featured">Footwear <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></a>
+                     <div class="dropdown-menu">
+                        <div class="dropdown-column">
+                            <h4>Styles</h4>
+                            <ul>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="shoes">All Footwear</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="running">Running</a></li>
+                                <li><a href="#featured" class="nav-filter-link" data-filter="lifestyle">Lifestyle</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#lookbook">Lookbook</a></li>
+            </ul>
+
+            <button class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+            
+            <div class="header-actions">
+                <!-- (Cart and Theme Toggles would go here) -->
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero" id="hero">
+            <video id="hero-video" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=2070&auto=format&fit=crop">
+                <source src="3917742-uhd_4096_2160_25fps.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>The AURA Collection</h1>
+                <p>Engineered for movement. Designed for life.</p>
+                <a href="#featured" class="btn">Shop The Drop</a>
+            </div>
+        </section>
+
+        <section class="featured" id="featured">
+            <div class="container">
+                <h2 class="section-title">Latest Drops</h2>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="apparel">Apparel</button>
+                    <button class="filter-btn" data-filter="shoes">Footwear</button>
+                </div>
+                <div class="products-grid">
+                    <!-- Products will be dynamically inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- === NEW: AURA FLAGSHIP MARQUEE SECTION === -->
+    <section class="aura-marquee-section">
+        <div class="aura-marquee">
+            <!-- Content is duplicated to ensure a seamless animation loop -->
+            <span>AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp; AURA FLAGSHIP &nbsp;</span>
+        </div>
+    </section>
+    
+    <!-- === NEW: FOOTER SECTION === -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <a href="#hero" class="logo">AURA<span class="logo-accent">.</span></a>
+                    <p>Engineered for movement. Designed for life. The ultimate fusion of performance and style.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.2,5.2 0,0 1,16.2 22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.2,5.2 0,0 1,7.8 2M7.6,4A3.6,3.6 0,0 0,4 7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0,0 0,20 16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0,1 1,16 6.75A1.25,1.25 0,0 1,17.25 5.5M12,7A5,5 0,1 1,7 12A5,5 0,0 1,12 7M12,9A3,3 0,1 0,15 12A3,3 0,0 0,12 9Z" /></svg></a>
+                        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.27C8.28,9.09 5.11,7.38 2.9,4.79C2.53,5.42 2.33,6.15 2.33,6.94C2.33,8.43 3.11,9.75 4.19,10.55C3.47,10.53 2.8,10.32 2.2,10V10.05C2.2,12.11 3.64,13.86 5.6,14.27C5.23,14.37 4.84,14.43 4.43,14.43C4.17,14.43 3.91,14.41 3.65,14.36C4.2,16.08 5.81,17.27 7.72,17.3C6.28,18.46 4.37,19.17 2.33,19.17C2,19.17 1.66,19.16 1.33,19.12C3.32,20.45 5.75,21.25 8.35,21.25C16,21.25 19.89,14.54 19.89,8.82C19.89,8.6 19.89,8.37 19.88,8.15C20.7,7.5 21.65,6.67 22.46,6Z" /></svg></a>
+                        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.81C10.44 7.31 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Order Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; <span id="copyright-year">2024</span> AURA Collective. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Product Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close-btn">&times;</button>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Modal content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const productsData = [
+            // --- FOOTWEAR ---
+            {id:1,name:"AURA Velocity Pro",price:180,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff",cat:["shoes", "running", "men"],desc:"Carbon-plated for maximum energy return, the Velocity Pro is our pinnacle racing shoe, designed for those who chase records."},
+            {id:2,name:"AURA Stratus",price:165,img:"https://images.unsplash.com/photo-1595950653106-6090ee0366aa",cat:["shoes", "lifestyle", "women"],desc:"All-day comfort meets sleek, modern design. The Stratus features our plush AURA-foam midsole for a cloud-like feel."},
+            {id:3,name:"AURA Classic Highs",price:120,img:"https://images.unsplash.com/photo-1560769629-975ec94e6a86",cat:["shoes", "lifestyle", "men", "women"],desc:"An icon reimagined. Premium leather and a timeless silhouette make the Classic Highs a staple in any wardrobe."},
+            {id:4,name:"AURA TrailBlazer",price:140,img:"https://images.unsplash.com/photo-1528660499422-3d2395b055d3",cat:["shoes", "running", "trail", "men"],desc:"Built for the wild. A rugged, high-traction outsole and water-resistant upper keep you stable and dry on any terrain."},
+            {id:5,name:"AURA Court Slam",price:155,img:"https://images.unsplash.com/photo-1579338559194-a162d19bf842",cat:["shoes", "lifestyle", "tennis", "women"],desc:"Dominate the court and the street. The Court Slam offers lateral stability and a retro-inspired look."},
+            // --- APPAREL: MEN ---
+            {id:101,name:"AURA Tech Hoodie",price:95,img:"https://images.unsplash.com/photo-1556426425-54b6a4a2a161",cat:["apparel", "men", "hoodies"],desc:"Our best-selling hoodie. Made from a premium, moisture-wicking fleece that's perfect for warm-ups or weekend lounging."},
+            {id:102,name:"AURA Motion Pants",price:80,img:"https://images.unsplash.com/photo-1511252391242-0a2a51a2481e",cat:["apparel", "men", "pants"],desc:"Four-way stretch fabric moves with you. These versatile pants are tailored for a clean look, suitable for the gym or the city."},
+            {id:103,name:"AURA Performance Tee",price:50,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",cat:["apparel", "men", "shirts"],desc:"Lightweight, breathable, and anti-odor technology. The only tee you'll need for your toughest workouts."},
+            {id:104,name:"AURA Urban Jacket",price:150,img:"https://images.unsplash.com/photo-1520975954732-35dd222996b7",cat:["apparel", "men", "jackets"],desc:"A water-resistant shell with a minimalist design. The Urban Jacket protects you from the elements without sacrificing style."},
+             // --- APPAREL: WOMEN ---
+            {id:201,name:"AURA Flow Dress",price:110,img:"https://images.unsplash.com/photo-1503142721832-720488404a43",cat:["apparel", "women", "dresses"],desc:"Effortlessly elegant. The Flow Dress is made from a soft, breathable fabric that drapes beautifully for any occasion."},
+            {id:202,name:"AURA Align Leggings",price:85,img:"https://images.unsplash.com/photo-1541336032482-84a5a51c6f97",cat:["apparel", "women", "leggings", "pants"],desc:"Buttery-soft and supportive. The Align Leggings feel like a second skin, perfect for yoga, pilates, or everyday wear."},
+            {id:203,name:"AURA Cloud-Knit Top",price:65,img:"https://images.unsplash.com/photo-1581044777550-4cfa6ce67943",cat:["apparel", "women", "tops"],desc:"The perfect layering piece. Our Cloud-Knit fabric is unbelievably soft, with a relaxed fit for ultimate comfort."},
+            {id:204,name:"AURA Stride Shorts",price:55,img:"https://images.unsplash.com/photo-1594758257743-91122a61b8f4",cat:["apparel", "women", "shorts"],desc:"A built-in liner and a lightweight shell provide coverage and freedom of movement for your daily run."},
+        ];
+
+        const productsGrid = document.querySelector('.products-grid');
+        const productModal = document.getElementById('product-modal');
+        const modalBody = document.getElementById('modal-body-content');
+        const closeModalBtn = document.getElementById('modal-close-btn');
+
+        function renderProducts(productsToRender) {
+            productsGrid.innerHTML = '';
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.dataset.id = product.id;
+                card.innerHTML = `
+                    <img loading="lazy" src="${product.img}" alt="${product.name}">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p>$${product.price}</p>
+                    </div>
+                `;
+                productsGrid.appendChild(card);
+            });
+        }
+        
+        function showProductModal(productId) {
+            const product = productsData.find(p => p.id == productId);
+            if (!product) return;
+
+            modalBody.innerHTML = `
+                <img src="${product.img}" alt="${product.name}">
+                <h2>${product.name}</h2>
+                <p class="price">$${product.price}</p>
+                <p class="description">${product.desc}</p>
+                <button class="btn add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+            `;
+            productModal.classList.add('active');
+            
+            modalBody.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+                alert(`${product.name} added to cart! (Concept)`);
+                productModal.classList.remove('active');
+            });
+        }
+        
+        productsGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.product-card');
+            if (card) {
+                showProductModal(card.dataset.id);
+            }
+        });
+
+        closeModalBtn.addEventListener('click', () => productModal.classList.remove('active'));
+        productModal.addEventListener('click', (e) => {
+            if(e.target === productModal) {
+                 productModal.classList.remove('active');
+            }
+        });
+
+        const allFilterControls = document.querySelectorAll('.filter-btn, .nav-filter-link');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+        
+        allFilterControls.forEach(control => {
+            control.addEventListener('click', (e) => {
+                e.preventDefault();
+                const filter = control.dataset.filter;
+
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                const mainButtons = document.querySelector('.filter-controls');
+                
+                const apparelKeywords = ['apparel', 'shirts', 'pants', 'hoodies', 'dresses', 'tops', 'leggings'];
+                const shoesKeywords = ['shoes', 'running', 'lifestyle'];
+
+                if (apparelKeywords.some(keyword => filter.includes(keyword))) {
+                    mainButtons.querySelector('[data-filter="apparel"]').classList.add('active');
+                } else if (shoesKeywords.some(keyword => filter.includes(keyword))) {
+                     mainButtons.querySelector('[data-filter="shoes"]').classList.add('active');
+                } else { // "all"
+                    mainButtons.querySelector('[data-filter="all"]').classList.add('active');
+                }
+
+                const filterTerms = filter.split(' ');
+                const filteredProducts = filter === 'all' 
+                    ? productsData 
+                    : productsData.filter(p => filterTerms.every(term => p.cat.includes(term)));
+                
+                renderProducts(filteredProducts);
+                
+                if (mobileNavOverlay.classList.contains('active')) {
+                    mobileNavOverlay.classList.remove('active');
+                }
+            });
+        });
+
+        const hamburger = document.querySelector('.hamburger');
+        hamburger.addEventListener('click', () => {
+            mobileNavOverlay.classList.toggle('active');
+        });
+
+        // --- INITIALIZATION ---
+        
+        // Dynamically set copyright year
+        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+        
+        // Initial render of all products
+        renderProducts(productsData);
+        
+        // Hide preloader once content is ready
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            document.body.classList.remove('loading');
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+        });
+    });
+    </script>
+</body>
+</html>
