@@ -12,33 +12,6 @@
 
     <style>
         /* --- GLOBAL & SETUP (MOBILE-FIRST) --- */
-        /* --- CUSTOM SCROLLBAR --- */
-        /* Chrome, Edge, Safari */
-        ::-webkit-scrollbar {
-            width: 12px;
-            background: var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #FA5B32 60%, #ffb380 100%);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(250,91,50,0.2);
-            border: 2px solid #fff2e6;
-            transition: background 0.3s;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #ffb380 0%, #FA5B32 100%);
-            box-shadow: 0 4px 12px rgba(250,91,50,0.35);
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-            border-radius: 8px;
-        }
-
-        /* Firefox */
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: #FA5B32 var(--bg-color);
-        }
         :root {
             --primary-color: #FA5B32;
             --dark-color: #0A0A0A;
@@ -58,6 +31,29 @@
             --footer-bg-color: #FFFFFF;
             --footer-border-color: #e0e0e0;
         }
+        
+        /* --- NEW: CUSTOM SCROLLBAR --- */
+        /* Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--bg-color);
+        }
+        /* Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 6px;
+            border: 2px solid var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #ff7752;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; cursor: default; transition: background-color 0.4s ease, color 0.4s ease; }
@@ -72,7 +68,21 @@
         body.loading main, body.loading header, body.loading footer { visibility: hidden; }
 
         /* --- HEADER & MOBILE NAV --- */
-        .main-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 1rem 0; background: rgba(10,10,10,0.5); backdrop-filter: blur(10px); }
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: transparent;
+            backdrop-filter: blur(0px);
+            transition: background-color 0.4s ease, backdrop-filter 0.4s ease, transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .main-header.scrolled {
+            background: rgba(10,10,10,0.5);
+            backdrop-filter: blur(10px);
+        }
         .main-nav { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; z-index: 1002;}
         .logo-accent { color: var(--primary-color); }
@@ -98,7 +108,14 @@
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2; }
         .hero-content { position: relative; z-index: 3; padding: 0 1rem; }
         .hero h1 { font-size: clamp(3rem, 15vw, 6rem); }
-        .btn { display: inline-block; background: var(--primary-color); color: #fff; padding: 14px 35px; border-radius: 50px; font-weight: 600; border: none; }
+        
+        /* --- ADVANCED TYPEWRITER ANIMATION --- */
+        .hero-subtitle { font-size: clamp(1rem, 4vw, 1.5rem); font-weight: 300; margin-top: 1rem; height: 1.5em; }
+        .typewriter-text { font-weight: 600; color: var(--primary-color); border-right: 3px solid var(--primary-color); animation: blink-caret 0.8s steps(1) infinite; }
+        .typewriter-text.typing { animation: none; }
+        @keyframes blink-caret { 0%, 100% { border-color: transparent; } 50% { border-color: var(--primary-color); } }
+
+        .btn { display: inline-block; background: var(--primary-color); color: #fff; padding: 14px 35px; border-radius: 50px; font-weight: 600; border: none; margin-top: 1.5rem; }
         
         /* --- PRODUCTS & FILTERING --- */
         .featured { padding: 4rem 0; }
@@ -250,12 +267,14 @@
     <main>
         <section class="hero" id="hero">
             <video id="hero-video" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523381294911-8d3cead13475">
-                <source src="3917742-uhd_4096_2160_25fps.mp4" type="video/mp4">
+                <source src="hero.mp4" type="video/mp4">
             </video>
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1>The AURA Collection</h1>
-                <p>Engineered for movement. Designed for life.</p>
+                <p class="hero-subtitle">
+                   <span class="typewriter-text"></span>
+                </p>
                 <a href="#featured" class="btn">Shop The Drop</a>
             </div>
         </section>
@@ -317,15 +336,9 @@
             {id:1,name:"AURA Velocity Pro",price:180,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff",cat:["shoes", "running", "men"],desc:"Carbon-plated for maximum energy return, the Velocity Pro is our pinnacle racing shoe, designed for those who chase records."},
             {id:2,name:"AURA Stratus",price:165,img:"https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb",cat:["shoes", "lifestyle", "women"],desc:"All-day comfort meets sleek, modern design. The Stratus features our plush AURA-foam midsole for a cloud-like feel."},
             {id:3,name:"AURA Classic Highs",price:120,img:"https://images.unsplash.com/photo-1608231387042-66d1773070a5",cat:["shoes", "lifestyle", "men", "women"],desc:"An icon reimagined. Premium leather and a timeless silhouette make the Classic Highs a staple in any wardrobe."},
-            
             {id:5,name:"AURA Court Slam",price:155,img:"https://images.unsplash.com/photo-1511556532299-8f662fc26c06",cat:["shoes", "lifestyle", "tennis", "women"],desc:"Dominate the court and the street. The Court Slam offers lateral stability and a retro-inspired look."},
-            
-            
-            
-            
-           // {id:10,name:"AURA Metro Low-Top",price:95,img:"https://images.unsplash.com/photo-1549298916-b41d501d3772",cat:["shoes", "lifestyle", "men"],desc:"Clean lines and a minimalist aesthetic define the Metro Low-Top, perfect for any casual occasion."},
+            // {id:10,name:"AURA Metro Low-Top",price:95,img:"https://images.unsplash.com/photo-1549298916-b41d501d3772",cat:["shoes", "lifestyle", "men"],desc:"Clean lines and a minimalist aesthetic define the Metro Low-Top, perfect for any casual occasion."},
             //{id:11,name:"AURA Ballet Flat",price:85,img:"https://images.unsplash.com/photo-1603413595438-e6d875a6c3f3",cat:["shoes", "lifestyle", "women"],desc:"Effortless elegance and packable convenience. Our leather ballet flats are a versatile essential."},
-
             // --- APPAREL: MEN (101-114) ---
             //{id:101,name:"AURA Tech Hoodie",price:95,img:"https://images.unsplash.com/photo-1621303837116-83b6389657c7",cat:["apparel", "men", "hoodies"],desc:"Our best-selling hoodie. Made from a premium, moisture-wicking fleece that's perfect for warm-ups or weekend lounging."},
             //{id:102,name:"AURA Motion Pants",price:80,img:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",cat:["apparel", "men", "pants"],desc:"Four-way stretch fabric moves with you. These versatile pants are tailored for a clean look, suitable for the gym or the city."},
@@ -341,19 +354,87 @@
             //{id:112,name:"AURA Puffer Vest",price:125,img:"https://images.unsplash.com/photo-1669482264831-61a7880e6a3d",cat:["apparel", "men", "jackets"],desc:"A lightweight, insulated vest that provides core warmth without the bulk. Ideal for transitional weather."},
             //{id:113,name:"AURA Oxford Shirt",price:80,img:"https://images.unsplash.com/photo-1596934842345-48737e57973d",cat:["apparel", "men", "shirts"],desc:"A classic button-down Oxford shirt that effortlessly bridges the gap between casual and smart."},
             //{id:114,name:"AURA Tops",price:90,img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b",cat:["apparel", "men", "pants"],desc:"Tapered joggers in a soft, durable fabric. Perfect for the gym, travel, or relaxing at home."},
-
-             // --- APPAREL: WOMEN (201-214) ---
+            // --- APPAREL: WOMEN (201-214) ---
             {id:201,name:"AURA Tops",price:90,img:"https://images.unsplash.com/photo-1469334031218-e382a71b716b",cat:["apparel", "men", "pants"],desc:"Tapered joggers in a soft, durable fabric. Perfect for the gym, travel, or relaxing at home."},
             //{id:202,name:"AURA Align Leggings",price:85,img:"https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2",cat:["apparel", "women", "leggings", "pants"],desc:"Buttery-soft and supportive. The Align Leggings feel like a second skin, perfect for yoga, pilates, or everyday wear."},
             //{id:203,name:"AURA Cloud-Knit Top",price:65,img:"https://images.unsplash.com/photo-1554631221-f9603e680854",cat:["apparel", "women", "tops"],desc:"The perfect layering piece. Our Cloud-Knit fabric is unbelievably soft, with a relaxed fit for ultimate comfort."},
             //{id:204,name:"AURA Stride Shorts",price:55,img:"https://images.unsplash.com/photo-1591925384193-8a828859496f",cat:["apparel", "women", "shorts"],desc:"A built-in liner and a lightweight shell provide coverage and freedom of movement for your daily run."},
-           
-
             // --- ACCESSORIES (301-309) ---
             {id:301,name:"AURA Classic Beanie",price:35,img:"https://images.unsplash.com/photo-1556306535-0f09a537f0a3",cat:["accessories", "hats", "men", "women"],desc:"A soft, ribbed-knit beanie for warmth and style. Available in multiple colors."},
-            
         ];
 
+        // --- NEW: NAVBAR HIDE/SHOW & STYLE ON SCROLL ---
+        const mainHeader = document.querySelector('.main-header');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Add/remove scrolled class for background styling
+            if (currentScrollY > 50) {
+                mainHeader.classList.add('scrolled');
+            } else {
+                mainHeader.classList.remove('scrolled');
+            }
+
+            // Hide/show header based on scroll direction
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling Down
+                mainHeader.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling Up
+                mainHeader.style.transform = 'translateY(0)';
+            }
+            lastScrollY = currentScrollY;
+        });
+
+        // --- ADVANCED TYPEWRITER CLASS ---
+        class Typewriter {
+            constructor(element, words, options = {}) {
+                this.element = element;
+                this.words = words;
+                this.loop = options.loop !== false;
+                this.typeSpeed = options.typeSpeed || 150;
+                this.deleteSpeed = options.deleteSpeed || 75;
+                this.pause = options.pause || 1500;
+                this.wordIndex = 0;
+                this.txt = '';
+                this.isDeleting = false;
+                this.type();
+            }
+
+            async type() {
+                const currentIndex = this.wordIndex % this.words.length;
+                const fullTxt = this.words[currentIndex];
+                this.element.classList.add('typing');
+
+                if (this.isDeleting) {
+                    this.txt = fullTxt.substring(0, this.txt.length - 1);
+                } else {
+                    this.txt = fullTxt.substring(0, this.txt.length + 1);
+                }
+                this.element.innerHTML = `<span class="wrap">${this.txt}</span>`;
+                let currentTypeSpeed = this.isDeleting ? this.deleteSpeed : this.typeSpeed;
+
+                if (!this.isDeleting && this.txt === fullTxt) {
+                    currentTypeSpeed = this.pause;
+                    this.isDeleting = true;
+                } else if (this.isDeleting && this.txt === '') {
+                    this.isDeleting = false;
+                    this.wordIndex++;
+                    if (!this.loop && this.wordIndex >= this.words.length) {
+                        this.element.classList.remove('typing');
+                        return;
+                    }
+                }
+                if (currentTypeSpeed === this.pause) {
+                    this.element.classList.remove('typing');
+                }
+                await new Promise(resolve => setTimeout(resolve, currentTypeSpeed));
+                this.type();
+            }
+        }
+        
         const productsGrid = document.querySelector('.products-grid');
         const productModal = document.getElementById('product-modal');
         const modalBody = document.getElementById('modal-body-content');
@@ -365,7 +446,6 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.dataset.id = product.id;
-                // CORRECTED and IMPROVED image URL construction
                 const imageUrl = `${product.img}?w=800&auto=format&fit=crop`;
                 card.innerHTML = `
                     <img loading="lazy" src="${imageUrl}" alt="${product.name}">
@@ -381,7 +461,6 @@
         function showProductModal(productId) {
             const product = productsData.find(p => p.id == productId);
             if (!product) return;
-            // CORRECTED and IMPROVED image URL construction
             const modalImageUrl = `${product.img}?w=1200&auto=format&fit=crop`;
             modalBody.innerHTML = `
                 <img src="${modalImageUrl}" alt="${product.name}">
@@ -419,7 +498,7 @@
             control.addEventListener('click', (e) => {
                 e.preventDefault();
                 const filter = control.dataset.filter;
-                if (!filter) return; // Ignore clicks on links without data-filter
+                if (!filter) return;
 
                 document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
                 const mainButtons = document.querySelector('.filter-controls');
@@ -466,6 +545,14 @@
             preloader.style.opacity = '0';
             setTimeout(() => { preloader.style.display = 'none'; }, 500);
         });
+
+        // --- INITIALIZE TYPEWRITER ---
+        const typewriterEl = document.querySelector('.typewriter-text');
+        if (typewriterEl) {
+            const wordsToType = [ "Designed for Life.", "Engineered for Movement.", "Built for You." ];
+            const typewriterOptions = { loop: true, typeSpeed: 100, deleteSpeed: 50, pause: 2000 };
+            new Typewriter(typewriterEl, wordsToType, typewriterOptions);
+        }
     });
     </script>
 </body>
