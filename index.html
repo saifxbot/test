@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AURA | The Flagship Store Experience</title>
+    <link rel="icon" type="image/svg+xml" href="favico1.svg">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +12,33 @@
 
     <style>
         /* --- GLOBAL & SETUP (MOBILE-FIRST) --- */
+        /* --- CUSTOM SCROLLBAR --- */
+        /* Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #FA5B32 60%, #ffb380 100%);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(250,91,50,0.2);
+            border: 2px solid #fff2e6;
+            transition: background 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ffb380 0%, #FA5B32 100%);
+            box-shadow: 0 4px 12px rgba(250,91,50,0.35);
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        /* Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #FA5B32 var(--bg-color);
+        }
         :root {
             --primary-color: #FA5B32;
             --dark-color: #0A0A0A;
